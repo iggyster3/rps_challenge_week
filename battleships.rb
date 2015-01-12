@@ -5,7 +5,9 @@ class Server < Sinatra::Base
 
   enable :session
 
-  set :public_folder, views
+  set :public, "public"
+  set :views, "views"
+
 
   get '/' do
     erb :index
