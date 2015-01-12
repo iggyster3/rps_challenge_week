@@ -1,5 +1,7 @@
 require 'sinatra/base'
 require 'sinatra/reloader' if :development?
+require './lib/setup.rb'
+require './lib/Game.rb'
 
 class Server < Sinatra::Base
 
@@ -7,6 +9,8 @@ class Server < Sinatra::Base
 
   set :public, "public"
   set :views, "views"
+
+  GAME = Game.new
 
 
   get '/' do
@@ -25,11 +29,10 @@ class Server < Sinatra::Base
 
   get '/maingame_1'do
 
-    @rps_options = ['rock', 'paper', 'scissors']
-    @computer_choice = @rps_options.sample
+    @computer = GAME.computers_option
     @human = params[:choice]
 
-    case [@human, @computer_choice]
+    case [@human, @computer]
       when ['rock', 'scissors'], ['scissors', 'paper'], ['paper', 'rock']
         redirect '/winnerpage'
       when ['rock', 'rock'], ['scissors', 'scissors'], ['paper', 'paper']
