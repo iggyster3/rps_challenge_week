@@ -1,7 +1,7 @@
 require 'sinatra/base'
 require 'sinatra/reloader' if :development?
 require './lib/setup.rb'
-require './lib/Game.rb'
+# require './lib/Game.rb'
 
 class Server < Sinatra::Base
 
@@ -14,6 +14,7 @@ class Server < Sinatra::Base
 
 
   get '/' do
+
     erb :index
   end
 
@@ -21,10 +22,30 @@ class Server < Sinatra::Base
 
     @player1 = params[:name]
 
+    if !GAME.ready?
+      player1 = Player.new
+      player1.name = @player1
+      GAME.add_player(player1)
+      redirect ('/game_not_ready')
+    elsif GAME.ready?
+      erb :maingame
+    end
     session[:p] = @player
-
     erb :maingame
+  end
 
+  get '/game_not_ready' do
+
+    @player2 = params[:name]
+
+    if GAME.ready?
+      player2 = Player.new
+      player2.name = @player1
+      GAME.add_player(player2)
+      redirect ('/maingame')
+    end
+
+    erb :game_not_ready
   end
 
   get '/maingame_1'do
